@@ -331,3 +331,189 @@ In this example, the URL pattern `/hello/` is mapped to the `hello_view` functio
 ```
 
 ```
+
+Here’s the text converted into Markdown format for better readability on GitHub. I’ve added headings, bolded keywords, and included notes for clarity. At the end, I’ve also included a suggested project tree structure and where examples should go.
+
+---
+
+# Templates and Static Content Management
+
+This concept page introduces **Django templates** and the management of **static content** within Django projects. It covers the creation and utilization of templates for rendering dynamic web pages, as well as the handling of static files such as **CSS**, **JavaScript**, and **images**.
+
+---
+
+## Concept Overview
+
+### Topics
+
+- **Django Templates**
+- **Template Language**
+- **Template Inheritance**
+- **Static Files Management**
+
+### Learning Objectives
+
+- Understand the role of templates in generating dynamic web content.
+- Learn the syntax and features of Django’s **template language**.
+- Explore **template inheritance** and its benefits for code reuse and organization.
+- Master the management of **static files** in Django projects, including CSS, JavaScript, and images.
+
+---
+
+## Django Templates
+
+In Django, **templates** are text files that define the structure and presentation of data for web pages. They separate the **presentation logic** from the **application logic**, allowing developers to create reusable and maintainable code. Templates provide a way to generate dynamic HTML by interpolating data from the application’s views and models.
+
+---
+
+## Template Language
+
+Django’s **template language** provides a set of **tags**, **filters**, and **variables** for manipulating and displaying dynamic data within templates. Templates can access and display data passed from views using **variable interpolation** (`{{ variable }}`) and can execute loops and conditional statements using **template tags** (`{% tag %}`).
+
+- **Tags** such as `{% for %}`, `{% if %}`, and `{% include %}` allow for control flow and template inclusion.
+- **Filters** like `{{ value|date }}` and `{{ value|truncatechars:30 }}` modify the displayed data.
+
+### Example: Book List Template
+
+```html
+<!-- book_list.html -->
+<h1>Book List</h1>
+<ul>
+  {% for book in book_list %}
+  <li>{{ book.title }} by {{ book.author }}</li>
+  {% endfor %}
+</ul>
+```
+
+---
+
+## Template Inheritance
+
+**Template inheritance** is a powerful feature in Django that allows you to create a **base template** with common elements and extend it with **child templates** for specific pages. This promotes code reuse and consistency across your web application.
+
+### Example: Base Template and Child Template
+
+```html
+<!-- base.html -->
+<html>
+  <head>
+    <title>{% block title %}My Site{% endblock %}</title>
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+  </body>
+</html>
+
+<!-- book_list.html -->
+{% extends 'base.html' %} {% block title %}Book List{% endblock %} {% block
+content %}
+<h1>Book List</h1>
+<ul>
+  {% for book in book_list %}
+  <li>{{ book.title }} by {{ book.author }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
+```
+
+---
+
+## Template Tags and Filters
+
+Django provides a rich set of **built-in template tags and filters** for common tasks like looping, conditional rendering, URL generation, and string formatting. You can also create **custom template tags and filters** to extend functionality.
+
+### Example: Using Template Tags and Filters
+
+```html
+<a href="{% url 'book-detail' book.id %}">{{ book.title|truncatechars:30 }}</a>
+```
+
+---
+
+## Static Files Management
+
+Django provides built-in tools for managing **static files** such as CSS, JavaScript, and images. Static files are typically stored in the `static` directory within Django apps and are served directly by the web server in production for improved performance.
+
+### Example: Including Static Files in a Template
+
+```html
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}My Site{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <!-- Content -->
+    <script src="{% static 'js/script.js' %}"></script>
+  </body>
+</html>
+```
+
+In this example, the `{% static %}` template tag is used to include static files like CSS and JavaScript in the HTML template. These files are stored in the `static` directory of the app and are referenced using the `{% static %}` tag.
+
+---
+
+## Practice Exercises
+
+1. Create a **base template** with common elements like header, footer, and navigation menu.
+2. Extend the base template to create specific templates for different pages of your website.
+3. Utilize **template tags and filters** to display dynamic data fetched from the backend.
+4. Experiment with **template inheritance** to understand its benefits in code organization and reuse.
+5. Manage **static files** such as CSS, JavaScript, and images in your Django project.
+6. Serve static files locally during development.
+
+---
+
+## Additional Resources
+
+- [Django Templates](https://intranet.alxswe.com/rltoken/uL-p4zKRwl9dtKiqLQUiaw)
+- [Template Syntax](https://intranet.alxswe.com/rltoken/SGBlqoiKYFOkChKrJYRuqA)
+- [Template Inheritance](https://intranet.alxswe.com/rltoken/vGfRv48yrP-QZAo8SWUmdQ)
+- [Built-in Template Tags and Filters](https://intranet.alxswe.com/rltoken/-gUZN8yFhP6k5_r3ypAa9Q)
+- [Managing Static Files](https://intranet.alxswe.com/rltoken/I1_1cYOOLnJ2S06ZdJPf-A)
+
+---
+
+## Project Tree Structure
+
+Here’s a suggested project tree structure for organizing your Django project:
+
+```
+myproject/
+├── manage.py
+├── myproject/
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
+├── myapp/
+│   ├── migrations/
+│   ├── templates/
+│   │   ├── base.html
+│   │   ├── book_list.html
+│   │   └── other_templates/
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── style.css
+│   │   ├── js/
+│   │   │   └── script.js
+│   │   └── images/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── views.py
+│   └── urls.py
+└── requirements.txt
+```
+
+### Where Examples Should Go
+
+- **Templates**: Place your template files (e.g., `base.html`, `book_list.html`) in the `templates/` directory of your app.
+- **Static Files**: Store static files like CSS, JavaScript, and images in the `static/` directory of your app (e.g., `static/css/style.css`, `static/js/script.js`).
+
+---
