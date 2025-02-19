@@ -517,3 +517,337 @@ myproject/
 - **Static Files**: Store static files like CSS, JavaScript, and images in the `static/` directory of your app (e.g., `static/css/style.css`, `static/js/script.js`).
 
 ---
+
+To improve readability when uploaded to GitHub, you can format the text using Markdown. Below is the text formatted with clear titles, headings, and code blocks for better readability:
+
+````markdown
+# User Authentication Basics
+
+This concept page introduces the basics of implementing user authentication in Django applications. It covers the built-in authentication system, user registration, login and logout functionalities, user permissions and groups, and various authentication-related components provided by Django.
+
+## Concept Overview
+
+### Topics
+
+- Django’s Built-in Authentication System
+- User Registration
+- User Login and Logout
+- Password Management
+- Authentication Views and URLs
+
+### Learning Objectives
+
+- Understand the purpose and components of Django’s authentication system
+- Learn how to register new users and create user accounts
+- Implement user login and logout functionalities
+- Manage user passwords securely
+- Utilize Django’s built-in authentication views and URLs
+
+---
+
+## Django’s Built-in Authentication System
+
+Django comes with a built-in authentication system that provides a set of models, views, and utilities for handling user authentication. Here’s a breakdown of the core components:
+
+### User Model
+
+The `User` model serves as the foundation for representing a user within the authentication system. It stores essential user information such as username, password (hashed for security), email address, and other relevant user-related data.
+
+```python
+from django.contrib.auth.models import User
+
+# Create a new user
+user = User.objects.create_user('john', 'john@example.com', 'password123')
+
+# Retrieve a user based on username
+user = User.objects.get(username='john')
+```
+````
+
+### Authentication Middleware
+
+Django incorporates authentication middleware that seamlessly associates users with incoming requests and grants access to the authenticated user within views and templates.
+
+### Authentication Backends
+
+Authentication backends handle the process of verifying user credentials. Django provides several built-in authentication backends, with the most common being `ModelBackend` for authentication against the default `User` model.
+
+---
+
+## User Registration
+
+User registration is the process of creating new user accounts in your application. Django provides the `UserCreationForm` and the `CreateView` class-based view to handle user registration.
+
+```python
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
+```
+
+In this example, the `SignUpView` uses the `UserCreationForm` to handle user registration. When a new user is registered, they are redirected to the login page using the `success_url` attribute.
+
+---
+
+## User Login and Logout
+
+Django’s authentication system provides built-in views and utilities for handling user login and logout processes.
+
+### User Login
+
+```python
+from django.contrib.auth.views import LoginView
+from django.urls import path
+
+urlpatterns = [
+    path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
+]
+```
+
+In this example, the `LoginView` class-based view is used to handle user login. The `template_name` attribute specifies the template to be rendered for the login form.
+
+### User Logout
+
+```python
+from django.contrib.auth.views import LogoutView
+from django.urls import path
+
+urlpatterns = [
+    path('logout/', LogoutView.as_view(), name='logout'),
+]
+```
+
+The `LogoutView` class-based view is used to handle user logout. When a user logs out, they are redirected to the default URL specified by the `LOGIN_REDIRECT_URL` setting.
+
+### Customizing Authentication Views
+
+You can customize these views by overriding their attributes or providing custom templates. Additionally, you can leverage the `login_required` decorator or the `PermissionRequiredMixin` to restrict access to specific views or functionalities based on user permissions or group memberships.
+
+```python
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def profile_view(request):
+    # This view can only be accessed by authenticated users
+    return render(request, 'profile.html')
+```
+
+---
+
+## Password Management
+
+Django includes features for managing user passwords securely, such as password hashing, password validators, and password reset functionality.
+
+- **Password Hashing**: Django automatically hashes user passwords using the PBKDF2 algorithm before storing them in the database.
+- **Password Reset**: Django provides built-in views and utilities for handling password reset functionality.
+- **Password Validators**: Django includes several built-in password validators that enforce password policies.
+
+```python
+# settings.py
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 9,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+```
+
+---
+
+## Authentication Views and URLs
+
+Django provides several built-in views and URLs related to user authentication, including login, logout, password reset, and password change views.
+
+### Login and Logout Views
+
+```python
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import path
+
+urlpatterns = [
+    path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+]
+```
+
+### Password Reset Views
+
+```python
+from django.contrib.auth import views as auth_views
+from django.urls import path
+
+urlpatterns = [
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+]
+```
+
+### Password Change View
+
+```python
+from django.contrib.auth import views as auth_views
+from django.urls import path
+
+urlpatterns = [
+    path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+]
+```
+
+---
+
+## Full Example
+
+### Step 1: Enable Django Auth App
+
+Check that the `django.contrib.auth` and `django.contrib.contenttypes` apps are in the list of installed apps. Update `INSTALLED_APPS` in `settings.py`:
+
+```python
+INSTALLED_APPS = [
+    ...
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    ...
+]
+```
+
+Ensure the following middlewares are present:
+
+```python
+MIDDLEWARE = [
+    ...,
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    ...
+]
+```
+
+### Step 2: Setting Up URLs & Redirects
+
+Update `urls.py` to include authentication URLs:
+
+```python
+from django.urls import path, include
+
+urlpatterns = [
+    ...,
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/profile/', TemplateView.as_view(template_name='accounts/profile.html'), name='profile'),
+    path("signup/", SignUpView.as_view(), name="templates/registration/signup"),
+    ...
+]
+```
+
+Update `settings.py` to set redirect URLs:
+
+```python
+LOGIN_REDIRECT_URL = "/accounts/profile"
+LOGOUT_REDIRECT_URL = "/accounts/profile"
+```
+
+### Step 3: Adding Template Files
+
+Create a `templates` folder at the root of the project and update `TEMPLATES` in `settings.py`:
+
+```python
+TEMPLATES = [
+    {
+        ...
+        'DIRS': [ BASE_DIR / "templates" ],
+        ...
+    },
+]
+```
+
+Folder structure:
+
+```
+├── db.sqlite3
+├── manage.py
+├── myapp
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── urls.py
+│   └── views.py
+├── mysite
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── templates
+    ├── profile.html
+    ├── accounts
+    │   └── profile.html
+    └── registration
+        ├── login.html
+        └── signup.html
+```
+
+### Step 4: Adding Signup View
+
+Add the signup view to `views.py`:
+
+```python
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+
+class SignUpView(CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy("login")
+    template_name = "registration/signup.html"
+```
+
+### Step 5: Migrating Your Changes and Running Your Project
+
+Run the following commands:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+```
+
+---
+
+## Practice Exercises
+
+1. Implement user registration functionality in your Django application.
+2. Add user login and logout views and URLs.
+3. Customize the built-in authentication views to match your application’s design.
+4. Implement password reset functionality for users.
+5. Define custom permissions and groups to control access to resources in your application.
+
+---
+
+## Additional Resources
+
+- [Django Authentication System](https://intranet.alxswe.com/rltoken/XAWNr7D5_czw0c1GzwYAhg)
+- [User Authentication in Django](https://intranet.alxswe.com/rltoken/yqWUDt-_e43cImYEigE29Q)
+- [Authentication Views](https://intranet.alxswe.com/rltoken/by87HvEez21QiNIA-G-xYA)
+- [Password Management](https://intranet.alxswe.com/rltoken/IdS2aM9iPBackWhNdBlaKA)
+- [Permissions and Authorization](https://intranet.alxswe.com/rltoken/v9dbK629JDvnT1Qjejq53A)
+- [Django Login, Logout, Signup, Password Change, and Password Reset](https://intranet.alxswe.com/rltoken/1tajHMD96BFpiQhtynL5IQ)
+
+```
+
+This Markdown formatting will make the content more readable and organized when uploaded to GitHub.
+```
