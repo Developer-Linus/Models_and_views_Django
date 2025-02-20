@@ -847,7 +847,115 @@ python manage.py runserver
 - [Permissions and Authorization](https://intranet.alxswe.com/rltoken/v9dbK629JDvnT1Qjejq53A)
 - [Django Login, Logout, Signup, Password Change, and Password Reset](https://intranet.alxswe.com/rltoken/1tajHMD96BFpiQhtynL5IQ)
 
+
+
+To implement templates in your Django app for the given URL patterns, follow these steps:
+
+---
+
+### **1. Create a `templates` Directory**
+Inside your Django app, create a `templates` folder. Inside this folder, create another folder named after your app (e.g., `library` if your app is named "library").
+
+```
+my_project/
+│── my_app/
+│   ├── templates/
+│   │   ├── my_app/
+│   │   │   ├── book_list.html
+│   │   │   ├── library_books.html
+│   ├── views.py
+│   ├── urls.py
+│   ├── models.py
+│   ├── ...
+│
 ```
 
-This Markdown formatting will make the content more readable and organized when uploaded to GitHub.
+---
+
+### **2. Define Views in `views.py`**
+Modify `views.py` to render the templates.
+
+```python
+from django.shortcuts import render
+from django.views.generic import TemplateView
+
+# Function-based view for listing books
+def list_books(request):
+    return render(request, 'my_app/book_list.html')
+
+# Class-based view for library books
+class LibraryDetailView(TemplateView):
+    template_name = 'my_app/library_books.html'
 ```
+
+---
+
+### **3. Create Template Files**
+#### **book_list.html**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book List</title>
+</head>
+<body>
+    <h1>List of Books</h1>
+    <p>Here are the available books.</p>
+</body>
+</html>
+```
+
+#### **library_books.html**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Books</title>
+</head>
+<body>
+    <h1>Library Books</h1>
+    <p>Welcome to the library section.</p>
+</body>
+</html>
+```
+
+---
+
+### **4. Configure `settings.py`**
+Ensure Django knows where to find templates. In your project's `settings.py`, update the `TEMPLATES` setting:
+
+```python
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / "templates"],  # Ensure BASE_DIR is defined at the top
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+```
+
+---
+
+### **5. Run the Django Server**
+```sh
+python manage.py runserver
+```
+
+Now, when you visit:
+- `http://127.0.0.1:8000/books/details/`, it will render `book_list.html`
+- `http://127.0.0.1:8000/library/books/`, it will render `library_books.html`
+
+---
+
+### **Next Steps**
+- Fetch actual book data from models.
+- Use Django Template Language (DTL) to display dynamic content.
+- Improve UI using Bootstrap or CSS.
